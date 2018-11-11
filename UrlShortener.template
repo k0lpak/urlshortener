@@ -1,0 +1,64 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Url Shortener Stack",
+    "Parameters": {        
+        "ApplicationName": {
+            "Description": "Application Name",
+            "Type": "String",
+            "Default": "urlshortener"
+        },                
+        "LambdaS3Bucket": {
+            "Description": "Bucket name with a lambda code package",
+            "Type": "String",
+            "Default": "k0lpak-urlshortener"
+        }
+    },
+    "Mappings": {
+        
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+        "shortUrlTable": {
+           "Type": "AWS::DynamoDB::Table",
+           "Properties": {
+              "AttributeDefinitions": [ { "AttributeName": "ShortKey", "AttributeType": "S" } ],
+              "KeySchema": [ { 
+                  "AttributeName": "ShortKey",
+                  "KeyType": "HASH"
+              } ],
+              "ProvisionedThroughput": { 
+                  "ReadCapacityUnits": 1,
+                  "WriteCapacityUnits": 1
+               },
+              "TableName": "ShortUrl",
+              "Tags": [
+                  { "Key": "Application", "Value": "UrlShortener" }
+              ]
+           }
+        },      
+        "urlShortenerAPIFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "FunctionName": "UrlShortenerAPIFunction",
+            "Code": {
+                "S3Bucket": "k0lpak-urlshortener",
+                "S3Key": { "Fn::Sub": ["${Application}.zip", { "Application" : { "Ref": "ApplicationName" } }] }
+            },
+            "Handler": "UrlShortener::UrlShortener.LambdaRun::FunctionHandlerAsync",
+            "Role": "arn:aws:iam::091543772345:role/lambda_api_application",
+            "Runtime": "dotnetcore2.1",
+            "MemorySize": 128,
+            "Timeout": 5,
+            "TracingConfig": {
+                "Mode": "Active"
+             },
+            "Description": "Url Shortener API"
+          }
+        }                
+    },
+    "Outputs": {
+
+    }
+}

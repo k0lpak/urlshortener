@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace UrlShortener
 {
-    public class Program
+    public class LocalRun
     {
         public static void Main(string[] args)
         {
