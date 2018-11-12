@@ -6,3 +6,4 @@ The project provides the Url Shortener API implemented using AWS Stack. (Educati
 2. Implement proper logging
 3. Implement caching layer to prevent read capacity consumption.
 4. Implement proper algorithm for short key generation.
+5. Cleanup CloudFormation Template, plus add Output items.
