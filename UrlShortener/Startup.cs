@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using UrlShortener.Repositories;
 
 namespace UrlShortener
 {
@@ -13,7 +14,7 @@ namespace UrlShortener
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore().AddJsonFormatters();
+            services.AddMvcCore().AddJsonFormatters().AddDataAnnotations();
             ConfigureDependencies(services);
         }
 
@@ -31,8 +32,9 @@ namespace UrlShortener
 
         private void ConfigureDependencies(IServiceCollection services)
         {
-            services.AddSingleton<IAmazonDynamoDB>(_ => new AmazonDynamoDBClient());
-            services.AddScoped<IDynamoDBContext>((provider) => new DynamoDBContext(provider.GetService<IAmazonDynamoDB>()));
+            services.AddSingleton<IAmazonDynamoDB, AmazonDynamoDBClient>();
+            services.AddScoped<IDynamoDBContext, DynamoDBContext>();
+            services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
         }
     }
 }
